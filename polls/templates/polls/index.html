@@ -1,0 +1,32 @@
+{% extends 'polls/layout.html' %}
+
+<style type="text/css">
+.poll {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 16px;
+}
+</style>
+
+{% block content %}
+    <div class="container">
+        <h4>Latest [5] Polls:</h4>
+        <hr/>
+        <br/>
+        <div class="polls">
+            {% if latest_question_list %}
+                <ul>
+                    {% for question in latest_question_list %}
+                        <li class="poll" style="padding: 10px;">
+                            <a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a>
+                            <a href="{% url 'polls:vote' question.id %}">| Vote</a>
+                            <a href="{% url 'polls:results' question.id %}">| Results</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <h3>No polls are available.</h3>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -8,4 +8,7 @@
 out
 gen
 .gitignore
-templates/
+CourseDjangoDocs/__pycache__/wsgi.cpython-37.pyc
+__pycache__/
+polls/__pycache__/
+polls/migrations/__pycache__/

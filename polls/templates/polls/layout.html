@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ravi's Django posts project</title>
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+<header class="container center-align">
+    <h3>Django tutorial to hands on with Django</h3>
+    <ul>
+        <li><a href="/polls/">Home</a></li>
+    </ul>
+</header>
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>

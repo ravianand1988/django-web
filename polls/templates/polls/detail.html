@@ -1,0 +1,22 @@
+{% extends 'polls/layout.html' %}
+
+{% block content %}
+    <div>
+        <h2> {{ question.question_text }}</h2>
+        {% if error_message %}
+            <p style="color: red;"><strong>{{ error_message }}</strong></p>
+        {% endif %}
+        <form action="{% url 'polls:vote' question.id %}" method="post">
+            {% csrf_token %}
+            {% for choice in question.choice_set.all %}
+                <p>
+                    <label>
+                        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+                        <span>{{ choice.choice_text }}</span>
+                    </label>
+                </p>
+            {% endfor %}
+            <input type="submit" value="Vote">
+        </form>
+    </div>
+{% endblock %}
