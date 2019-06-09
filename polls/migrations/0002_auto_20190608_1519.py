@@ -2,11 +2,10 @@
 
 import datetime
 from django.db import migrations, models
-from django.utils.timezone import utc
+from django.utils import timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('polls', '0001_initial'),
     ]
@@ -15,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='question',
             name='pub_date',
-            field=models.DateTimeField(default=datetime.datetime(2019, 6, 8, 13, 19, 9, 428286, tzinfo=utc), verbose_name='date published'),
+            field=models.DateTimeField(default=timezone.now(), verbose_name='date published'),
         ),
     ]
