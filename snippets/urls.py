@@ -1,16 +1,18 @@
 from django.urls import path, include
-from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework.routers import DefaultRouter
+from rest_framework.schemas import get_schema_view
 
-from . import views
+from snippets.views import SnippetViewSet, UserViewSet, api_root
+
+schema_view = get_schema_view(title='DRF Snippet API')
+
+# Create a router and register our viewsets with it.
+router = DefaultRouter()
+router.register(r'snippets', SnippetViewSet)
+router.register(r'users', UserViewSet)
 
 urlpatterns = [
-    path('', views.api_root),
-    path('snippets/', views.SnippetList.as_view(), name='snippet-list'),
-    path('snippets/<int:pk>/', views.SnippetDetail.as_view(), name='snippet-detail'),
-    path('snippets/<int:pk>/highlight/', views.SnippetHighlight.as_view(), name='snippet-highlight'),
-    path('users/', views.UserList.as_view(), name='user-list'),
-    path('users/<int:pk>/', views.UserDetail.as_view(), name='user-detail'),
+    path('schema/', schema_view),
+    path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
 ]
-
-urlpatterns = format_suffix_patterns(urlpatterns)
