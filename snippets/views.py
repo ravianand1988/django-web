@@ -19,10 +19,12 @@ def api_root(request, format=None):
     })
 
 
-# class SnippetFilter(filters.FilterSet):
-#     class Meta:
-#         model = Snippet
-#         fields = ['owner', 'language', 'title', 'style']
+class SnippetFilter(filters.FilterSet):
+    title = filters.CharFilter(field_name='title', lookup_expr='icontains')
+
+    class Meta:
+        model = Snippet
+        fields = ['id', 'owner', 'language', 'title', 'style']
 
 
 class SnippetViewSet(viewsets.ModelViewSet):
@@ -35,8 +37,7 @@ class SnippetViewSet(viewsets.ModelViewSet):
     serializer_class = SnippetSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
-    # filterset_class = SnippetFilter
-    filterset_fields = ('id', 'language', 'owner',)
+    filterset_class = SnippetFilter
     ordering_fields = ('owner', 'title')
     ordering = ('id',)
 
