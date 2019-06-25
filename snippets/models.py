@@ -35,3 +35,29 @@ class Snippet(models.Model):
         formatter = HtmlFormatter(style=self.style, linenos=linenos, full=True, **options)
         self.highlighted = highlight(self.code, lexer, formatter)
         super(Snippet, self).save(*args, **kwargs)
+
+
+class Publication(models.Model):
+    title = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ('title',)
+
+    def __str__(self):
+        return self.title
+
+
+class Article(models.Model):
+    headline = models.CharField(max_length=100)
+    publications = models.ManyToManyField(Publication)
+
+    class Meta:
+        ordering = ('headline',)
+
+    def __str__(self):
+        return self.headline
+
+    def reset(self):
+        self.headline = 'Default headline'
+        self.publications.clear()
+        self.save()

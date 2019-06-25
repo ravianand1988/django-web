@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-from .models import Snippet
+from .models import Snippet, Article, Publication
 
 
 class SnippetSerializer(serializers.HyperlinkedModelSerializer):
@@ -19,3 +19,18 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ('url', 'id', 'username', 'snippets')
+
+
+class ArticleSerializer(serializers.HyperlinkedModelSerializer):
+    reset = serializers.HyperlinkedIdentityField(view_name='article-reset')
+    publications = serializers.HyperlinkedRelatedField(many=True, view_name='publication-detail', read_only=True)
+
+    class Meta:
+        model = Article
+        fields = ('url', 'id', 'headline', 'publications', 'reset')
+
+
+class PublicationSerializer(serializers.HyperlinkedRelatedField):
+    class Meta:
+        model = Publication
+        fields = ['id', 'title']
