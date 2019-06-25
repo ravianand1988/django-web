@@ -1,3 +1,5 @@
+from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import rest_framework as filters
 from rest_framework import viewsets, permissions, renderers, status
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
@@ -17,22 +19,32 @@ def api_root(request, format=None):
     })
 
 
+# class SnippetFilter(filters.FilterSet):
+#     class Meta:
+#         model = Snippet
+#         fields = ['owner', 'language', 'title', 'style']
+
+
 class SnippetViewSet(viewsets.ModelViewSet):
     """
     This viewsets automatically provides `list`, `create`, `retrieve`, `update` and `destroy` actions.
 
     Additionally we also provide an extra `highlight` action.
     """
-
+    queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly,)
+    filter_backends = (DjangoFilterBackend,)
+    # filterset_class = SnippetFilter
+    filterset_fields = ('id', 'language', 'owner',)
+    ordering_fields = ('owner', 'title')
+    ordering = ('id',)
 
-    def get_queryset(self):
-        queryset = Snippet.objects.all()
-        username = self.request.query_params.get('username', None)
-        if username is not None:
-            queryset = queryset.filter(owner__username=username)
-        return queryset
+    """
+    # search and filter doesn't work together, if you have both filter will override search.
+    """
+
+    # search_fields = ('=owner__username',)
 
     @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
     def highlight(self, request, *args, **kwargs):
