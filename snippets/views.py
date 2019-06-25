@@ -24,9 +24,12 @@ class SnippetViewSet(viewsets.ModelViewSet):
     Additionally we also provide an extra `highlight` action.
     """
 
-    queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly,)
+
+    def get_queryset(self):
+        user = self.request.user
+        return Snippet.objects.filter(owner=user)
 
     @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
     def highlight(self, request, *args, **kwargs):
