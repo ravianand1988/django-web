@@ -28,8 +28,11 @@ class SnippetViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly,)
 
     def get_queryset(self):
-        user = self.request.user
-        return Snippet.objects.filter(owner=user)
+        queryset = Snippet.objects.all()
+        username = self.request.query_params.get('username', None)
+        if username is not None:
+            queryset = queryset.filter(owner__username=username)
+        return queryset
 
     @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
     def highlight(self, request, *args, **kwargs):
