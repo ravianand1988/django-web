@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
 
+from notification.pusher import beams_client
 from snippets.models import Snippet, Article, Publication
 from snippets.permisssions import IsOwnerOrReadOnly
 from snippets.serializers import SnippetSerializer, UserSerializer, ArticleSerializer, PublicationSerializer
@@ -61,6 +62,17 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    @action(detail=True)
+    def beams_auth(self, request, *args, **kwargs):
+        # Do your normal auth checks here 🔒
+        user = request.user  # get it from your auth system
+        # user_id_in_query_param = request.args.get('user_id')
+        if not user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        beams_token = beams_client.generate_token(user.username)
+        return Response(beams_token)
 
 
 class ArticleViewSet(viewsets.ModelViewSet):

@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'polls.apps.PollsConfig',
     'rest_framework',
+    'notification',
     'snippets.apps.SnippetsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
