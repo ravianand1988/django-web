@@ -3,6 +3,7 @@ from pygments import highlight
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers import get_all_lexers, get_lexer_by_name
 from pygments.styles import get_all_styles
+from enum import Enum
 
 LEXERS = [item for item in get_all_lexers() if item[1]]
 LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
@@ -61,3 +62,40 @@ class Article(models.Model):
         self.headline = 'Default headline'
         self.publications.clear()
         self.save()
+
+
+class Person(models.Model):
+    name = models.CharField(max_length=30, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    username = models.CharField(max_length=30, unique=True)
+    favorites = models.ManyToManyField('self', symmetrical=False)
+
+    def __str__(self):
+        return f'{self.id}: {self.username}'
+
+
+class Student(Person):
+    enroll_number = models.CharField(max_length=10, blank=True)
+    friends = models.ManyToManyField('self')
+
+    def __str__(self):
+        return f'{self.id}: {self.username}'
+
+
+class Employee(models.Model):
+    TYPE_CHOICES = (
+        (1, 'OWNER'),
+        (2, 'STAFF')
+    )
+
+    name = models.CharField(max_length=30, blank=True)
+    type = models.SmallIntegerField(choices=TYPE_CHOICES, default=2)
+    staffs = models.ManyToManyField('self', symmetrical=False)
+
+    def __str__(self):
+        return f'{self.id}: {self.name}: {self.type}'
+
+    def clean(self):
+        """How to validate if adding staff is of type `STAFF`?"""
+        pass
