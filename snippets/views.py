@@ -1,15 +1,17 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework as filters
+from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
 from rest_framework import viewsets, permissions, renderers, status
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from notification.pusher import beams_client
 from snippets.models import Snippet, Article, Publication
 from snippets.permisssions import IsOwnerOrReadOnly
-from snippets.serializers import SnippetSerializer, UserSerializer, ArticleSerializer, PublicationSerializer
+from snippets.serializers import SnippetSerializer, UserSerializer, ArticleSerializer, PublicationSerializer, \
+    GroupSerializer
 
 
 @api_view(['GET'])
@@ -62,6 +64,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated, TokenHasReadWriteScope]
 
     @action(detail=True)
     def beams_auth(self, request, *args, **kwargs):
@@ -73,6 +76,13 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
         beams_token = beams_client.generate_token(user.username)
         return Response(beams_token)
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated, TokenHasScope]
+    required_scopes = ['groups']
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
 
 
 class ArticleViewSet(viewsets.ModelViewSet):
