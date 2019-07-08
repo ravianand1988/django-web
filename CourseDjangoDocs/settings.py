@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'polls.apps.PollsConfig',
+    'oauth2_provider',
     'rest_framework',
     'notification',
     'snippets.apps.SnippetsConfig',
@@ -107,9 +108,21 @@ AUTH_PASSWORD_VALIDATORS = [
 # Rest framework settings
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     # 'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+}
+
+OAUTH_PROVIDER = {
+    'SCOPES': {
+        'read': 'Read Scope',
+        'write': 'Write Scope',
+        'groups': 'Access to your groups'
+    }
 }
 
 # Internationalization
